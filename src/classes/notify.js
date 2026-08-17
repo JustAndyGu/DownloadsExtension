@@ -23,8 +23,10 @@ export default class Notify {
 	}
 
 	static complete(download) {
-		chrome.storage.sync.get('notify').then(({ notify: { onComplete: allowed = false } }) => {
-			if (!allowed) return
+		chrome.storage.sync.get('notify').then(({ notify }) => {
+            if (!notify?.onComplete) return
+
+            if (!allowed) return
 			showNotification(download, 'Download complete')
 		})
 	}
