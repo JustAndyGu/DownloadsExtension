@@ -1,0 +1,58 @@
+name: Build Chrome Extension
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Chrome Extension
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build extension
+        run: npm run build
+
+      - name: Verify extension
+        run: |
+          echo "===== Manifest ====="
+          cat public/manifest.json
+
+          echo ""
+          echo "===== Build output ====="
+          find public -maxdepth 3 -type f | sort
+
+          echo ""
+          echo "===== Download events ====="
+          grep -n "onComplete\|onChanged\|onCreated\|onErased" public/build/background.js || true
+
+      - name: Verify manifest
+        run: |
+          test -f public/manifest.json
+          test -f public/build/background.js
+          test -f public/index.html
+
+      - name: Upload Chrome extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: DownloadsExtension
+          path: public
+          if-no-files-found: error
