@@ -146,7 +146,17 @@ function setBadge(downloads) {
 // Returns a promise resolving to all downloads with any viewed completed downloads removed.
 async function getUnseenDownloads(downloads) {
 	const seen = Symbol()
-	return (await Promise.all(downloads.map(async (dl) => ((await dl.isSeen()) ? seen : dl)))).filter((item) => item !== seen)
+    return (
+        await Promise.all(
+            downloads.map(async (dl) => {
+                if (dl.matchesStates(Download.state.deleted)) {
+                    return seen
+                }
+
+                return (await dl.isSeen()) ? seen : dl
+            })
+        )
+    ).filter((item) => item !== seen)
 }
 
 // Creates a Map containing download ids and their corrosponding download states.

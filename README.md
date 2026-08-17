@@ -1,4 +1,5 @@
 # Chrome Download Manager Extension
+> Try to fix the display error while local file was deleted.
 
 An extension for Chrome which replaces the default download shelf with a menu in the Chrome toolbar. It is designed to look like the new extensions panel and blend in seamlessly with the current Chrome UI. The popup is made entirely with Svelte which makes it so easy to render the list of downloads and keep the UI updated as the download state changes.
 
